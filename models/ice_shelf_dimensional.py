@@ -13,11 +13,12 @@
 from operator import itemgetter
 import firedrake
 from firedrake import inner, grad
-from icepack.constants import ice_density as ρ_I, water_density as ρ_W, gravity as g, glen_flow_law as n
+from icepack.constants import ice_density as ρ_I, water_density as ρ_W, gravity as g
 from icepack.models.viscosity import viscosity_depth_averaged as viscosity
 from icepack.models.friction import side_friction, normal_flow_penalty
 from icepack.models.mass_transport import Continuity
 from icepack.utilities import add_kwarg_wrapper
+
 
 def gravity(**kwargs):
     r"""Return the gravitational part of the ice shelf action functional
@@ -38,8 +39,8 @@ def gravity(**kwargs):
     -------
     firedrake.Form
     """
-    u, h, A = itemgetter("velocity", "thickness", "fluidity")(kwargs)
-    #g = g1 / (0.5 * A ** (-1/n) * 150.0 ** (1/n) * 3000.0 **(1 - 1/n) * 300.0 ** 2)
+    u, h = itemgetter("velocity", "thickness")(kwargs)
+
     ρ = ρ_I * (1 - ρ_I / ρ_W)
     return -0.5 * ρ * g * inner(grad(h**2), u)
 
@@ -59,8 +60,6 @@ def terminus(**kwargs):
 
     mesh = u.ufl_domain()
     ν = firedrake.FacetNormal(mesh)
-    u, h, A = itemgetter("velocity", "thickness", "fluidity")(kwargs)
-    #g = g1 / (0.5 * A ** (-1/n) * 150.0 ** (1/n) * 3000.0 **(1 - 1/n) * 300.0 ** 2)
     ρ = ρ_I * (1 - ρ_I / ρ_W)
     return 0.5 * ρ * g * h**2 * inner(u, ν)
 
@@ -133,7 +132,6 @@ class IceShelf:
 
         metadata = {"quadrature_degree": self.quadrature_degree(**kwargs)}
         dx = firedrake.dx(metadata=metadata)
-        print(dx)
         ds = firedrake.ds(domain=mesh, metadata=metadata)
 
         viscosity = self.viscosity(**kwargs) * dx

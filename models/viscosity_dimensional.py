@@ -91,8 +91,7 @@ def membrane_stress(**kwargs):
     ε_e = _effective_strain_rate(ε, ε_min)
     μ = 0.5 * A ** (-1 / n) * ε_e ** (1 / n - 1)
     I = Identity(ε.ufl_domain().geometric_dimension())
-    denom = 0.5 * A ** (-1 / n) * 150.0 ** ((1 / n) - 1) * 3000.0 ** (1 - (1 / n))
-    return 2 * μ * (ε + trace(ε) * I) * denom
+    return 2 * μ * (ε + trace(ε) * I)
 
 
 def viscosity_depth_averaged(**kwargs):
@@ -136,6 +135,4 @@ def viscosity_depth_averaged(**kwargs):
 
     ε = sym_grad(u)
     ε_e = _effective_strain_rate(ε, ε_min)
-    #return 2 * n / (n + 1) * h * A ** (-1 / n) * ε_e ** (1 / n + 1)
-    denom = 0.5 * A ** (-1 / n) * 150.0 ** ((1 / n) - 1) * 3000.0 ** (1 - (1 / n))
-    return (2 * n / (n + 1) * h * A ** (-1 / n) * ε_e ** (1 / n + 1)) / denom
+    return 2 * n / (n + 1) * h * A ** (-1 / n) * ε_e ** (1 / n + 1)

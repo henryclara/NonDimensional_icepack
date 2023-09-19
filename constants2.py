@@ -24,17 +24,14 @@ typical temperatures.
 #: number of seconds in a year, for unit conversions
 year = 365.25 * 24 * 60 * 60
 
-#: acceleration due to gravity (m / yr^2)
-
-A = 4.6e-25*year*1.0e18
-#gravity = 9.81 * year**2
-gravity = 9.81 * year**2 / (0.5 * A ** (-1/3) * (917 / year**2 * 1.0e-6) * 150.0 ** (1/3) * 3000.0 **(-1/3) * 300.0 ** 2)
-
 #: density of ice
 ice_density = 917 / year**2 * 1.0e-6
 
 #: density of seawater
 water_density = 1024 / year**2 * 1.0e-6
+
+#: acceleration due to gravity (m / yr^2)
+gravity = (9.81 * year**2 * ice_density * 300.0**2.0) / (3000.0**(0.0645 - 1) * 150**(0.3813 + 1))
 
 #: ideal gas constant (kJ / mol K)
 ideal_gas = 8.3144621e-3
